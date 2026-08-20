@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Leave Portal — Admin</title>
+<link rel="stylesheet" href="css/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3/lib/msal-browser.min.js"></script>
+</head>
+<body>
+
+<div id="signinScreen" class="signin-screen">
+  <h1>Admin Dashboard</h1>
+  <p class="muted">Sign in with your Microsoft 365 work account.</p>
+  <button id="signInBtn">Sign in with Microsoft</button>
+  <p id="signinError" class="error"></p>
+</div>
+
+<div id="notAdminScreen" class="signin-screen hidden">
+  <h1>Not authorized</h1>
+  <p class="muted">This account doesn't have admin access to the leave portal.</p>
+  <a href="index.html">Go to my leave page instead</a>
+</div>
+
+<div id="appScreen" class="hidden">
+  <header>
+    <h1>Leave Portal — Admin</h1>
+    <div>
+      <span id="userName" style="margin-right:16px;"></span>
+      <a href="index.html" style="color:white;margin-right:16px;">My leave</a>
+      <button id="signOutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <p id="viewOnlyNotice" class="muted hidden" style="margin-bottom:16px;">
+      View-only: you can see everything below, but only Prithip can approve, reject, or add leave directly.
+    </p>
+
+    <div class="card">
+      <h2>Pending requests awaiting approval</h2>
+      <table>
+        <thead>
+          <tr><th>Employee</th><th>Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Action</th></tr>
+        </thead>
+        <tbody id="pendingBody"></tbody>
+      </table>
+      <p id="emptyPendingMsg" class="muted hidden">No pending requests right now.</p>
+    </div>
+
+    <div class="card">
+      <h2>Add leave directly for an employee</h2>
+      <p class="muted">Use this for backdated entries, phoned-in sick days, or anything you're recording on someone's behalf. It's approved immediately.</p>
+      <p id="addLeaveDisabledNotice" class="muted hidden">Only Prithip can add leave directly.</p>
+      <form id="addLeaveForm">
+        <label>Employee</label>
+        <select id="employeeSelect" required></select>
+
+        <label>Leave type</label>
+        <select id="directLeaveType" required></select>
+
+        <label>Start date</label>
+        <input type="date" id="directStartDate" required />
+
+        <label>End date</label>
+        <input type="date" id="directEndDate" required />
+
+        <label>Note (optional)</label>
+        <textarea id="directReason" rows="2" placeholder="e.g. Reported sick by phone"></textarea>
+
+        <p class="muted" id="directDaysPreview"></p>
+        <button type="submit">Add leave entry</button>
+        <p id="directFormError" class="error"></p>
+        <p id="directFormSuccess" class="muted"></p>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Attendance log — all approved leave</h2>
+      <table>
+        <thead>
+          <tr><th>Employee</th><th>Type</th><th>Dates</th><th>Days</th><th>Recorded</th></tr>
+        </thead>
+        <tbody id="attendanceBody"></tbody>
+      </table>
+      <p id="emptyAttendanceMsg" class="muted hidden">No approved leave recorded yet.</p>
+    </div>
+  </main>
+</div>
+
+<script src="js/config.js"></script>
+<script src="data/india-holidays-2026.js"></script>
+<script src="js/dates.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/graph.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

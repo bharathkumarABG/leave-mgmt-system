@@ -1,0 +1,148 @@
+:root {
+  --primary: #1f4e78;
+  --primary-light: #eaf1f7;
+  --border: #d9d9d9;
+  --text: #262626;
+  --muted: #737373;
+  --ok: #1a7f37;
+  --warn: #b35900;
+  --bad: #b3261e;
+  font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #f7f8fa;
+  color: var(--text);
+}
+
+header {
+  background: var(--primary);
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 { font-size: 18px; margin: 0; }
+
+header button {
+  background: white;
+  color: var(--primary);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+main {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 15px;
+  color: var(--primary);
+}
+
+.balances {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.balance-tile {
+  background: var(--primary-light);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.balance-tile .num { font-size: 22px; font-weight: 700; color: var(--primary); }
+.balance-tile .label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+form label {
+  display: block;
+  font-size: 13px;
+  margin: 12px 0 4px;
+  color: var(--muted);
+}
+
+form select, form input, form textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+form button {
+  margin-top: 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; }
+
+.status { padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.status.Pending { background: #fff3e0; color: var(--warn); }
+.status.Approved { background: #e6f4ea; color: var(--ok); }
+.status.Rejected, .status.Cancelled { background: #fdecea; color: var(--bad); }
+
+.signin-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  gap: 16px;
+}
+
+.signin-screen button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.hidden { display: none !important; }
+
+.error { color: var(--bad); font-size: 13px; margin-top: 8px; }
+.muted { color: var(--muted); font-size: 13px; }
+
+.row-actions button {
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 6px;
+}
+.approve-btn { background: var(--ok); color: white; }
+.reject-btn { background: var(--bad); color: white; }
+.cancel-btn { background: #eee; color: var(--text); }
