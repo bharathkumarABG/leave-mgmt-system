@@ -7,8 +7,8 @@
 window.APP_CONFIG = {
   // --- Azure AD app registration (Entra admin center) ---
   msal: {
-    clientId: "PASTE-YOUR-APP-CLIENT-ID-HERE",
-    authority: "https://login.microsoftonline.com/PASTE-YOUR-TENANT-ID-HERE",
+    clientId: "38b57f6d-a582-42f9-b677-085c56fccfb2",
+    authority: "https://login.microsoftonline.com/cf7323e2-013d-40b8-82a5-53db19b19fac",
     // Must exactly match a Redirect URI configured on the app registration,
     // e.g. https://yourusername.github.io/leave-mgmt-system/
     redirectUri: window.location.origin + window.location.pathname.replace(/[^/]+$/, ""),
@@ -22,7 +22,7 @@ window.APP_CONFIG = {
   // --- SharePoint site & lists ---
   // siteId looks like: contoso.sharepoint.com,GUID,GUID
   // Get it via: GET https://graph.microsoft.com/v1.0/sites/{hostname}:/sites/{site-name}
-  siteId: "PASTE-YOUR-SHAREPOINT-SITE-ID-HERE",
+  siteId: "adamsbridgenet.sharepoint.com,cc930797-4c8e-4419-b718-4fac32e7f13c,e69e9d44-834d-46b6-96f4-ba809c7161f4",
   lists: {
     employees: "Employees",
     leaveRequests: "LeaveRequests",
