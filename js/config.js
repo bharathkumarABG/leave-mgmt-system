@@ -41,9 +41,9 @@ window.APP_CONFIG = {
 
   // Of the admins above, only these can actually click Approve/Reject or use
   // "Add leave directly" — everyone else in adminEmails sees the dashboard
-  // read-only. Right now that means Prithip is the sole approver; you
-  // (Bharathkumar) can see the queue and attendance log but not act on them.
+  // read-only. Both Bharathkumar and Prithip can approve.
   approverEmails: [
+    "bharathkumar.mayakrishnan@adamsbridge.com",
     "prithip.kumar@adamsbridge.com",
   ],
 
