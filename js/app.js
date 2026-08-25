@@ -26,10 +26,10 @@ async function boot() {
   currentEmployee = await getEmployeeByEmail(email);
 
   if (!currentEmployee) {
-    document.getElementById("appScreen").innerHTML =
-      `<main><div class="card"><h2>No employee record found</h2>
+    document.querySelector("#appScreen main").innerHTML =
+      `<div class="card"><h2>No employee record found</h2>
        <p class="muted">No row in the Employees list matches ${email}. Ask HR to add you, then refresh.</p>
-       </div></main>`;
+       </div>`;
     return;
   }
 
