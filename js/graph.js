@@ -12,6 +12,11 @@ async function graphFetch(path, options = {}) {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
+      // Our lists are small, so we don't need SharePoint's indexed-column
+      // requirement for the $filter queries this app uses (WorkEmail,
+      // EmployeeEmail, Status). Without this header, those filters fail
+      // with a 400 "not indexed" error.
+      Prefer: "HonorNonIndexedQueriesWarningMayFailRandomly",
       ...(options.headers || {}),
     },
   });
