@@ -35,10 +35,76 @@ async function boot() {
   }
 
   populateLeaveTypeOptions();
+  populateSummaryHeader();
   allEmployees = await getAllEmployees();
   populateEmployeeOptions();
+  await refreshOverview();
   await refreshPending();
   await refreshAttendance();
+}
+
+// ---- Overview: stat tiles + per-employee leave summary ----
+
+function populateSummaryHeader() {
+  const headerRow = document.getElementById("summaryHeaderRow");
+  headerRow.innerHTML = `<th>Employee</th><th>Email</th>`;
+  window.APP_CONFIG.leaveTypes.forEach((lt) => {
+    const th = document.createElement("th");
+    th.textContent = lt.label;
+    headerRow.appendChild(th);
+  });
+}
+
+async function refreshOverview() {
+  const [pending, approved] = await Promise.all([
+    getAllPendingRequests(),
+    getAllApprovedRequests(),
+  ]);
+
+  // Stat tiles
+  const totalDaysUsed = approved.reduce((sum, r) => sum + Number(r.Days || 0), 0);
+  const stats = [
+    { label: "Employees", value: allEmployees.length },
+    { label: "Pending requests", value: pending.length },
+    { label: "Approved requests", value: approved.length },
+    { label: "Total leave days taken", value: totalDaysUsed },
+  ];
+  const statsGrid = document.getElementById("statsGrid");
+  statsGrid.innerHTML = "";
+  stats.forEach((s) => {
+    const tile = document.createElement("div");
+    tile.className = "balance-tile";
+    tile.innerHTML = `<div class="num">${s.value}</div><div class="label">${s.label}</div>`;
+    statsGrid.appendChild(tile);
+  });
+
+  // Per-employee summary: used + remaining for each leave type, computed
+  // from the approved requests we already fetched (no extra API calls).
+  const usedMap = {};
+  approved.forEach((r) => {
+    if (!usedMap[r.EmployeeEmail]) usedMap[r.EmployeeEmail] = {};
+    usedMap[r.EmployeeEmail][r.LeaveType] =
+      (usedMap[r.EmployeeEmail][r.LeaveType] || 0) + Number(r.Days || 0);
+  });
+
+  const body = document.getElementById("summaryBody");
+  body.innerHTML = "";
+  allEmployees.forEach((emp) => {
+    const used = usedMap[emp.WorkEmail] || {};
+    const cells = window.APP_CONFIG.leaveTypes
+      .map((lt) => {
+        const usedDays = used[lt.key] || 0;
+        if (lt.balanceField) {
+          const opening = Number(emp[lt.balanceField] || 0);
+          return `<td>${usedDays} used / ${opening - usedDays} left</td>`;
+        }
+        return `<td>${usedDays} used</td>`;
+      })
+      .join("");
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${emp.Name}</td><td>${emp.WorkEmail}</td>${cells}`;
+    body.appendChild(tr);
+  });
 }
 
 function populateLeaveTypeOptions() {
@@ -86,7 +152,7 @@ async function refreshPending() {
     const actionCell = canApprove
       ? `<button class="approve-btn" data-id="${r.itemId}">Approve</button>
          <button class="reject-btn" data-id="${r.itemId}">Reject</button>`
-      : `<span class="muted">Awaiting Prithip</span>`;
+      : `<span class="muted">Awaiting approval</span>`;
     tr.innerHTML = `
       <td>${r.EmployeeEmail}</td>
       <td>${typeLabel(r.LeaveType)}</td>
@@ -106,6 +172,7 @@ async function refreshPending() {
       await updateLeaveRequestStatus(btn.dataset.id, "Approved");
       await refreshPending();
       await refreshAttendance();
+      await refreshOverview();
     });
   });
   body.querySelectorAll(".reject-btn").forEach((btn) => {
@@ -113,6 +180,7 @@ async function refreshPending() {
       btn.disabled = true;
       await updateLeaveRequestStatus(btn.dataset.id, "Rejected");
       await refreshPending();
+      await refreshOverview();
     });
   });
 }
@@ -141,7 +209,7 @@ document.getElementById("addLeaveForm").addEventListener("submit", async (e) => 
   successEl.textContent = "";
 
   if (!canApprove) {
-    errorEl.textContent = "Only Prithip can add leave directly.";
+    errorEl.textContent = "You're not on the approvers list, so you can't add leave directly.";
     return;
   }
 
@@ -188,6 +256,7 @@ document.getElementById("addLeaveForm").addEventListener("submit", async (e) => 
     document.getElementById("addLeaveForm").reset();
     document.getElementById("directDaysPreview").textContent = "";
     await refreshAttendance();
+    await refreshOverview();
   } catch (err) {
     errorEl.textContent = "Could not add entry: " + err.message;
   }
